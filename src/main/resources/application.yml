@@ -1,0 +1,45 @@
+### Application Name
+##spring.application.name=JournalApplication
+##
+### MongoDB Connection
+##spring.data.mongodb.uri=mongodb+srv://Rohan:Rohan%402003@cluster0.nikdi.mongodb.net/myjournaluser?retryWrites=true&w=majority&tls=true&connectTimeoutMS=60000
+##
+### Enable Auto Index Creation
+##spring.data.mongodb.auto-index-creation=true
+##x-creation=true
+##logging.level.org.mongodb.driver=DEBUG
+#
+#
+#spring:
+#  .application:
+#    .name: JournalApplication
+#  .data:
+#    .mongodb:
+#      .uri : mongodb+srv://Rohan:Rohan%402003@cluster0.nikdi.mongodb.net/myjournaluser?retryWrites=true&w=majority&tls=true&connectTimeoutMS=60000
+#      .auto-index-creation : true
+#
+#x-creation: true
+#logging:
+#  level:
+#    org:
+#      mongodb:
+#        driver: DEBUG
+
+spring:
+  profiles:
+    active: dev
+
+# Logging Configuration
+logging:
+  level:
+    com:
+      SpringBootProject:
+        journalApp: TRACE
+
+# Weather API Key Configuration
+weather:
+  api:
+    key: "80ac20fb9fda4964b5574933253103"
+
+
+weatherApi : "80ac20fb9fda4964b5574933253103"
