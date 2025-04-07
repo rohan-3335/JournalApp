@@ -1,6 +1,6 @@
 package com.SpringBootProject.journalApp.Configuration;
 
-import com.SpringBootProject.journalApp.services.UserDetailServiceImpl;
+import com.SpringBootProject.journalApp.filter.JwtFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -14,49 +14,47 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import java.util.List;
-
-import static org.springframework.security.config.Customizer.withDefaults;
 
 @Configuration
 @EnableWebSecurity
 public class SpringSecurityConfig {
 
-    // ✅ Define UserDetailServiceImpl as a Bean
-    @Bean
-    public UserDetailsService userDetailsService() {
-        return new UserDetailServiceImpl();
+    private final JwtFilter jwtFilter;
+
+    public SpringSecurityConfig(JwtFilter jwtFilter) {
+        this.jwtFilter = jwtFilter;
     }
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/public/**").permitAll() // Allow all user-related endpoints
-                        .requestMatchers(HttpMethod.POST, "/public").permitAll() // Explicitly allow user registration
-                        .requestMatchers(HttpMethod.PUT,"/journal/**","/user/**").authenticated()
-                        .requestMatchers(HttpMethod.GET,"/admin/**").hasRole("ADMIN")// Protect journal APIs
-                        .anyRequest().permitAll()) // Allow other requests
-                .httpBasic(withDefaults())
-                .csrf(csrf -> csrf.disable()); // CSRF disabled
+                        .requestMatchers("/public/**").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/public").permitAll()
+                        .requestMatchers(HttpMethod.PUT, "/journal/**", "/user/**").authenticated()
+                        .requestMatchers(HttpMethod.GET, "/admin/**").hasRole("ADMIN")
+                        .anyRequest().permitAll())
+                .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
+                .csrf(csrf -> csrf.disable())
+                .sessionManagement(sm -> sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS)); // Optional for JWT
 
         return http.build();
     }
 
-
-    // ✅ Password Encoder Bean
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
-    // ✅ Fix AuthenticationManager dependency issue
+    // AuthenticationManager for login use
     @Bean
-    public AuthenticationManager authenticationManager(UserDetailsService userDetailsService, PasswordEncoder passwordEncoder) {
-        DaoAuthenticationProvider authenticationProvider = new DaoAuthenticationProvider();
-        authenticationProvider.setUserDetailsService(userDetailsService);
-        authenticationProvider.setPasswordEncoder(passwordEncoder);
-
-        return new ProviderManager(List.of(authenticationProvider));
+    public AuthenticationManager authenticationManager(UserDetailsService userDetailsService,
+                                                       PasswordEncoder passwordEncoder) {
+        DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
+        provider.setUserDetailsService(userDetailsService);
+        provider.setPasswordEncoder(passwordEncoder);
+        return new ProviderManager(List.of(provider));
     }
 }
