@@ -1,0 +1,48 @@
+spring:
+  application:
+    name: JournalApplication
+  port: 8081
+  data:
+    mongodb:
+      uri: mongodb+srv://Rohan:Rohan%402003@cluster0.nikdi.mongodb.net/myjournaluser?retryWrites=true&w=majority&tls=true&connectTimeoutMS=60000
+      auto-index-creation: true
+
+  redis:
+    host: redis-17377.crce182.ap-south-1-1.ec2.redns.redis-cloud.com
+    port: 17377
+    username: default
+    password: 98M6NpJXBf3wN5KERbRtBi3wguITsIAG
+    ssl:
+      enabled: true
+      timeout: 3000
+
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: rohankrote2003@gmail.com
+    password: ydlu lhak pmxf wgof
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+            required: true
+
+  logging:
+    level:
+      org:
+        mongodb:
+          driver: DEBUG
+
+logging:
+  level:
+    com:
+      SpringBootProject:
+        journalApp: TRACE
+
+weather:
+  api:
+    key: "80ac20fb9fda4964b5574933253103"
+
+weatherApi: "80ac20fb9fda4964b5574933253103"

@@ -18,7 +18,11 @@ public class RedisService {
     public  <T> T get(String key, Class<T> entityClass){
         try {
           Object o = redisTemplate.opsForValue().get(key);
-          ObjectMapper objectMapper = new ObjectMapper();
+            if (o == null) { // <-- changed: use jsonValue instead of o, check for null early
+                return null;
+            }
+
+            ObjectMapper objectMapper = new ObjectMapper();
           return objectMapper.readValue(o.toString(), entityClass);
       }
       catch(Exception e){
