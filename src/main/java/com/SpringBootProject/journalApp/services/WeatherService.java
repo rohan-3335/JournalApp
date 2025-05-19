@@ -21,8 +21,9 @@ public class WeatherService {
 //    @Value(("$(weatherApi"))
 //    private   String apikey;
 //
-    @Value("${weatherApi}") // Corrected syntax
-    private String apikey;
+@Value("${weather.api.key}")
+private String apikey;
+
 
 //    private static final  String API = "http://api.weatherapi.com/v1/current.json?key=API_KEY&q=CITY";
 
