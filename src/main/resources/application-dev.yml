@@ -45,4 +45,4 @@ weather:
   api:
     key: "80ac20fb9fda4964b5574933253103"
 
-weatherApi: "80ac20fb9fda4964b5574933253103"
+#weatherApi: "80ac20fb9fda4964b5574933253103"
