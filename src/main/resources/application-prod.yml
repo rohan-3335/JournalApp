@@ -9,7 +9,7 @@ spring:
 
 redis:
   host: ${REDIS_HOST}
-  port: ${REDIS_PORT:6380}    # For TLS Redis ports are often 6380, else 6379
+  port: 6380  # For TLS Redis ports are often 6380, else 6379
   username: ${REDIS_USERNAME} # Optional
   password: ${REDIS_PASSWORD}
   ssl:
