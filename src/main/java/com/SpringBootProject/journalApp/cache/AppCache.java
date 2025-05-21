@@ -1,7 +1,6 @@
 package com.SpringBootProject.journalApp.cache;
 
 import com.SpringBootProject.journalApp.Entity.ConfigJournalAppEntity;
-import com.SpringBootProject.journalApp.Entity.UserEntity;
 import com.SpringBootProject.journalApp.repository.ConfigJournalRepository;
 import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,33 +13,34 @@ import java.util.Map;
 
 @Component
 public class AppCache {
-    @Autowired
-    public ConfigJournalRepository configJournalRepository;
-
-
-    public Map<String,String > APP_CACHE;
 
     @Autowired
-    private RedisTemplate redisTemplate;
+    private ConfigJournalRepository configJournalRepository;
 
+    // Specify RedisTemplate with generics
+    @Autowired
+    private RedisTemplate<String, String> redisTemplate;
+
+    public Map<String, String> APP_CACHE;
 
     @PostConstruct
-    public void init(){
-        APP_CACHE = new HashMap<>();
-       List<ConfigJournalAppEntity> all = configJournalRepository.findAll();
-        for(ConfigJournalAppEntity configJournalAppEntity : all){
-            APP_CACHE.put(configJournalAppEntity.getKey(),configJournalAppEntity.getValue());
+    public void init() {
+        try {
+            // Initialize cache from DB
+            APP_CACHE = new HashMap<>();
+            List<ConfigJournalAppEntity> all = configJournalRepository.findAll();
+            for (ConfigJournalAppEntity entity : all) {
+                APP_CACHE.put(entity.getKey(), entity.getValue());
+            }
 
+            // Test Redis connection
+            redisTemplate.opsForValue().set("test-key", "connected");
+            String value = redisTemplate.opsForValue().get("test-key");
+            System.out.println("Redis test value: " + value);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw e;  // Re-throw so Spring knows initialization failed
         }
-
-
     }
-    @PostConstruct
-    public void testRedisConnection() {
-        redisTemplate.opsForValue().set("test-key", "connected");
-        String value = (String) redisTemplate.opsForValue().get("test-key");
-        System.out.println("Redis test value: " + value);
-    }
-
-
 }
