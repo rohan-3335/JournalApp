@@ -1,14 +1,11 @@
-# Use minimal Java 17 image
-FROM eclipse-temurin:17-jdk-alpine
+FROM eclipse-temurin:17-jdk-jammy
 
-# Create app directory inside container
 WORKDIR /app
 
-# Copy the compiled JAR
-COPY target/*.jar app.jar
+COPY target/journalApp-0.0.1-SNAPSHOT.jar journalApp.jar
 
-# Set active Spring profile to prod
 ENV SPRING_PROFILES_ACTIVE=prod
 
-# Start the Spring Boot application
-ENTRYPOINT ["java", "-jar", "journalApp.jar"]
+EXPOSE 8080
+
+CMD ["sh", "-c", "java -Dserver.port=${PORT:-8080} -jar journalApp.jar"]
