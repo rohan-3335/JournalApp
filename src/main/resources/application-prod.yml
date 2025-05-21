@@ -7,14 +7,15 @@ spring:
       uri: ${MONGODB_URI}
       auto-index-creation: true
 
-  redis:
-    host: ${REDIS_HOST}
-    port: 17377
-    username: ${REDIS_USERNAME}
-    password: ${REDIS_PASSWORD}
-    ssl:
-      enabled: true
-      timeout: 3000
+redis:
+  host: ${REDIS_HOST}
+  port: ${REDIS_PORT:6380}    # For TLS Redis ports are often 6380, else 6379
+  username: ${REDIS_USERNAME} # Optional
+  password: ${REDIS_PASSWORD}
+  ssl:
+    enabled: true
+    timeout: 3000
+
 
   mail:
     host: smtp.gmail.com
